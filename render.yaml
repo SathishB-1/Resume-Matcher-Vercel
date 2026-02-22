@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: resume-matcher
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn app:app"
+    plan: free
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.14.0
+      - key: SECRET_KEY
+        generateValue: true

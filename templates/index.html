@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Screening & Job Matching</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Load Phosphor Icons for modern icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <!-- Header Section -->
+        <div class="header">
+            <div style="display: flex; justify-content: flex-end; width: 100%; margin-bottom: 10px;">
+                <a href="{{ url_for('logout') }}" class="btn-text"
+                    style="color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; padding: 6px 12px; border-radius: 6px; background: white; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);"><i
+                        class="ph ph-sign-out"></i> Logout</a>
+            </div>
+            <div class="logo-icon">
+                <i class="ph-fill ph-robot"></i>
+            </div>
+            <h1>AI Resume Screening & <span class="highlight">Job Matching</span></h1>
+            <p class="subtitle">Match your resume with real job listings using NLP & Semantic Similarity. Find<br>your
+                perfect career path in seconds.</p>
+        </div>
+
+        <!-- Main Input Card -->
+        <div class="main-card">
+            <form method="POST" enctype="multipart/form-data" class="resume-form" id="resumeForm">
+
+                <div class="input-area">
+                    <textarea name="resume" placeholder="Paste your resume text here..."></textarea>
+
+                    <div class="upload-btn-wrapper">
+                        <button type="button" class="btn-upload" onclick="document.getElementById('fileInput').click()">
+                            <i class="ph ph-file-arrow-up"></i> Upload File
+                        </button>
+                        <input type="file" name="resume_file" id="fileInput" accept=".pdf"
+                            onchange="updateFileName(this)">
+                    </div>
+                </div>
+
+                <div class="file-name-display" id="fileNameDisplay"></div>
+
+                <div class="divider">
+                    <span>OR</span>
+                </div>
+
+                <div class="action-row">
+                    <button type="submit" class="btn-primary" id="analyzeBtn">
+                        <i class="ph-bold ph-rocket-launch"></i> Analyze & Match Jobs
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Results Section -->
+        {% if results %}
+        <div class="results-header">
+            <div class="title-group">
+                <h2>Top Matching Jobs</h2>
+                <span class="badge">{{ results|length }} Found</span>
+            </div>
+            <div class="actions">
+                <button class="icon-btn"><i class="ph ph-sort-descending"></i></button>
+                <button class="icon-btn"><i class="ph ph-funnel"></i></button>
+            </div>
+        </div>
+
+        <div class="results-list">
+            {% for job in results %}
+            <div class="job-card">
+                <div class="job-header">
+                    <h3>{{ job.title }}</h3>
+                </div>
+
+                <div class="job-meta">
+                    <span class="meta-item"><i class="ph ph-map-pin"></i> {{ job.location }}</span>
+                    {% if job.organization != "Not Provided" and job.organization != "Confidential Employer" %}
+                    <span class="meta-item"><i class="ph ph-buildings"></i> {{ job.organization }}</span>
+                    {% else %}
+                    <span class="meta-item"><i class="ph ph-buildings"></i> Confidential</span>
+                    {% endif %}
+                    <!-- Simulated metadata for presentation -->
+                    <span class="meta-item"><i class="ph ph-clock"></i> Full-time</span>
+                </div>
+
+                <div class="accuracy-section">
+                    <div class="accuracy-header">
+                        <span class="label">Match Accuracy</span>
+                        <span class="value">{{ job.score }}%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" style="width: {{ job.score }}%;"></div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="view-more">
+                <button class="btn-text">View more matches <i class="ph ph-caret-down"></i></button>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <script>
+        function updateFileName(input) {
+            const display = document.getElementById('fileNameDisplay');
+            if (input.files && input.files.length > 0) {
+                display.innerHTML = `<i class="ph-fill ph-file-pdf" style="color:#ef4444; margin-right:6px"></i> ${input.files[0].name}`;
+                display.style.display = 'block';
+            } else {
+                display.style.display = 'none';
+            }
+        }
+    </script>
+
+</body>
+
+</html>
