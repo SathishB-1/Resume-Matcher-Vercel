@@ -1,0 +1,12 @@
+flask
+pandas
+scikit-learn
+numpy
+spacy
+sentence-transformers
+torch
+PyPDF2
+flask-sqlalchemy
+flask-login
+flask-bcrypt
+gunicorn
